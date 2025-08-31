@@ -9,6 +9,7 @@ from typing import List, Dict
 from PIL import Image
 import torch # pyright: ignore[reportMissingImports]
 import threading
+import logging
 
 from transformers import BlipProcessor, BlipForConditionalGeneration  # type: ignore
 
@@ -24,8 +25,9 @@ class BlipCaptioner:
     def __init__(self, model_name: str = "Salesforce/blip-image-captioning-base", device: str | None = None):
         self.model_name = model_name
         self._processor = None
-        
+
         self._model = None
+        self._caption_lock = threading.Lock()  # Instance lock for thread-safe captioning
         # Device selection (CPU by default; uses CUDA if available or MPS on Apple)
         if device is None:
             if torch.cuda.is_available():
@@ -59,30 +61,38 @@ class BlipCaptioner:
         Returns: dict[image_path] -> caption
         Robust to missing/corrupt files (caption will be an error string).
         """
+        if not isinstance(image_paths, list) or not all(isinstance(p, str) for p in image_paths):
+            raise ValueError("image_paths must be a list of strings")
+        if not image_paths:
+            return {}
+
         self._ensure_loaded()
         results: Dict[str, str] = {}
 
-        for p in image_paths:
-            try:
-                image = Image.open(p).convert("RGB")
-            except Exception as e:
-                results[p] = f"[error opening image: {e}]"
-                continue
+        with self._caption_lock:
+            for p in image_paths:
+                try:
+                    image = Image.open(p).convert("RGB")
+                except Exception as e:
+                    logging.error(f"Error opening image {p}: {e}")
+                    results[p] = f"[error opening image: {e}]"
+                    continue
 
-            try:
-                inputs = self._processor(images=image, return_tensors="pt").to(self.device)
+                try:
+                    inputs = self._processor(images=image, return_tensors="pt").to(self.device)
 
-                with torch.no_grad():
-                    out = self._model.generate(
-                        **inputs,
-                        max_new_tokens=max_new_tokens,
-                        num_beams=num_beams,
-                        repetition_penalty=repetition_penalty)
+                    with torch.no_grad():
+                        out = self._model.generate(
+                            **inputs,
+                            max_new_tokens=max_new_tokens,
+                            num_beams=num_beams,
+                            repetition_penalty=repetition_penalty)
 
-                caption = self._processor.batch_decode(out, skip_special_tokens=True)[0].strip()
-                results[p] = caption
+                    caption = self._processor.batch_decode(out, skip_special_tokens=True)[0].strip()
+                    results[p] = caption
 
-            except Exception as e:
-                results[p] = f"[captioning error: {e}]"
+                except Exception as e:
+                    logging.error(f"Error captioning image {p}: {e}")
+                    results[p] = f"[captioning error: {e}]"
 
         return results
