@@ -1,11 +1,6 @@
-# Ignore all .log files in folder
-# Ignore specific file
+# Ignore all generic files in folder
 *.pyc
 __pycache__/
-Models/EmbeddingModels/
-Models/ImageCaptionModels/
-Models/MainLLM/
-TempData/
-QdrantData/
 .AdvancedRAG/
-QdrantDBStorage/
+
+# Ignore specific folders
