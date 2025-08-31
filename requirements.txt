@@ -29,3 +29,5 @@ pydantic
 layoutparser
 pdf2image
 
+# UI applicatoin framework
+streamlit

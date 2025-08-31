@@ -114,7 +114,7 @@ This project implements an **end-to-end Retrieval-Augmented Generation (RAG) pip
 	- Please visit following link for Qdrant information,  https://qdrant.tech/documentation/quickstart/
 	- $ docker pull qdrant/qdrant
 	- $ docker run -d --name qdrant -p 6333:6333 -p 6334:6334 -v "$(pwd)/QdrantDBStorage:/qdrant/storage:z" qdrant/qdrant
-	- For the next run just "docker start qdrant"
+	  This will start the qdrant server and same can be checked on http://localhost:6333/dashboard#/welcome. For the next run just "docker start qdrant"
 
 10. Launch the Ollama docker image
 	- $ docker pull ollama/ollama
@@ -129,3 +129,6 @@ This project implements an **end-to-end Retrieval-Augmented Generation (RAG) pip
 
 12. Final execution
 	- $ python3 main.py
+
+# 🏗️ Running a web service
+#	1. streamlit run app.py
