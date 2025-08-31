@@ -4,3 +4,8 @@ __pycache__/
 .AdvancedRAG/
 
 # Ignore specific folders
+Models/EmbeddingModels/
+Models/ImageCaptionModels/
+Models/MainLLM/
+TempData/
+QdrantDBStorage/
