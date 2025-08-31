@@ -130,5 +130,12 @@ This project implements an **end-to-end Retrieval-Augmented Generation (RAG) pip
 12. Final execution
 	- $ python3 main.py
 
-# 🏗️ Running a web service
-#	1. streamlit run app.py
+---
+
+# Running the web service
+	$ streamlit run app.py
+	Application will run on http://localhost:8501/
+
+<img width="808" height="866" alt="image" src="https://github.com/user-attachments/assets/9d379ebf-ab89-4d8d-a35e-4cf8da1a1246" />
+
+
