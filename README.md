@@ -1,6 +1,6 @@
 # Advanced RAG Pipeline for PDFs
 
-This project implements an **end-to-end Retrieval-Augmented Generation (RAG) pipeline** for PDFs. It extracts text and images, generates embeddings, stores them in a vector database, and allows semantic querying using a Large Language Model (LLM).
+This project implements an **end-to-end Retrieval-Augmented Generation (RAG) pipeline** for PDFs. It extracts text and images, generates embeddings, stores them in a vector database, and allows semantic querying using multiple Large Language Model (LLM).
 
 ---
 
@@ -21,21 +21,9 @@ This project implements an **end-to-end Retrieval-Augmented Generation (RAG) pip
 
 ## Architecture & Workflow
 
-```mermaid
-flowchart LR
-    A[PDF Document] --> B[PDF Parser]
-    B --> C[Extracted Text]
-    B --> D[Extracted Images]
-    D --> E[Image Captioning]
-    E --> F[Combined Text + Captions]
-    C --> F
-    F --> G[Text Preprocessing & Sentence Splitting]
-    G --> H[Embedding Generation]
-    H --> I[Qdrant Vector Database]
-    J[User Question] --> K[Embedder -> Query Qdrant]
-    K --> L[Top-K Relevant Sentences]
-    L --> M[LLM (Ollama) Generates Answer]
-    M --> N[Final Answer]
+<img width="845" height="1024" alt="design" src="https://github.com/user-attachments/assets/dd416512-7613-42a2-a8d5-09794b96969f" />
+
+
 
 ---
 
@@ -109,35 +97,35 @@ flowchart LR
 	- $ sudo apt-get update
 	- $ sudo apt-get install python3-venv
 	- $ sudo apt-get install python3-pip -y
-  - $ sudo apt-get install tesseract-ocr -y
+	- $ sudo apt-get install tesseract-ocr -y
 	- $ python3 -m venv .AdvancedRAG [Naming is up to the user]
 	- $ source .AdvancedRAG/bin/activate [Naming is up to the user]
 
 6. Install required Python packages
-- $ pip3 install -r requirements.txt
+	- $ pip3 install -r requirements.txt
 
 7. Download the "Image to text" model and save offline
-- git clone https://huggingface.co/Salesforce/blip-image-captioning-base into /AdvancedRAG/Models/ImageCaptionModels/blip
+	- git clone https://huggingface.co/Salesforce/blip-image-captioning-base into /AdvancedRAG/Models/ImageCaptionModels/blip
 
 8. Download the "Caption generation" model and save offline
-- git clone https://huggingface.co/sentence-transformers/all-mpnet-base-v2 into /AdvancedRAG/Models/EmbeddingModels/mpnet-base-v2
+	- git clone https://huggingface.co/sentence-transformers/all-mpnet-base-v2 into /AdvancedRAG/Models/EmbeddingModels/mpnet-base-v2
 
 9. Launch the Qdrant docker image
-- Please visit following link for Qdrant information,  https://qdrant.tech/documentation/quickstart/
-- $ docker pull qdrant/qdrant
-- $ docker run -d --name qdrant -p 6333:6333 -p 6334:6334 -v "$(pwd)/QdrantDBStorage:/qdrant/storage:z" qdrant/qdrant
-- For the next run just "docker start qdrant"
+	- Please visit following link for Qdrant information,  https://qdrant.tech/documentation/quickstart/
+	- $ docker pull qdrant/qdrant
+	- $ docker run -d --name qdrant -p 6333:6333 -p 6334:6334 -v "$(pwd)/QdrantDBStorage:/qdrant/storage:z" qdrant/qdrant
+	- For the next run just "docker start qdrant"
 
 10. Launch the Ollama docker image
-- $ docker pull ollama/ollama
-- $ docker run -d --name ollama --gpus all -p 11434:11434 -v $(pwd)/Models/MainLLM:/root/.ollama ollama/ollama:latest
+	- $ docker pull ollama/ollama
+	- $ docker run -d --name ollama --gpus all -p 11434:11434 -v $(pwd)/Models/MainLLM:/root/.ollama ollama/ollama:latest
 	  This will start the ollama server and same can be checked on http://localhost:11434. For the next run just "docker start ollama"
 
 11. Download any Ollama comapatible AI models
-- $ docker exec -it ollama ollama pull gemma3:4b
-- $ docker exec -it ollama ollama pull mistral:7b <Got better results>
-- $ docker exec -it ollama ollama pull llama3.1:8b
-- $ docker exec -it ollama ollama pull deepseek-r1:8b
+	- $ docker exec -it ollama ollama pull gemma3:4b
+	- $ docker exec -it ollama ollama pull mistral:7b <Got better results>
+	- $ docker exec -it ollama ollama pull llama3.1:8b
+	- $ docker exec -it ollama ollama pull deepseek-r1:8b
 
 12. Final execution
-- $ python3 main.py
+	- $ python3 main.py
