@@ -17,7 +17,7 @@ class RAGPipeline:
         self.lock = threading.Lock()
         try:
             self.embedder = Embedder(device=embedder_device)
-            self.captioner = Image_Captioner("./Models/ImageCaptionModels/blip")
+            self.captioner = Image_Captioner("./Models/ImageCaptionModels/blip", device=embedder_device)
             self.qdrant_handler = QdrantHandler(url=qdrant_url, collection_name=collection_name)
             self.llm_client = OllamaClient(model="mistral:7b", url="http://localhost:11434")
         except Exception as e:

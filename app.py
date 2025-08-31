@@ -6,16 +6,7 @@ from RAG_Pipeline.RAG_Pipeline import RAGPipeline
 
 class RAGApp:
     def __init__(self):
-        if "uploaded_file_names" not in st.session_state:
-            st.session_state.uploaded_file_names = set()
-        if "busy" not in st.session_state:
-            st.session_state.busy = False
-        if "last_answer" not in st.session_state:
-            st.session_state.last_answer = ""
-        if "collection_name" not in st.session_state:
-            st.session_state.collection_name = str(uuid.uuid4())
-
-        self.pipeline = RAGPipeline(embedder_device=-1, collection_name=st.session_state.collection_name)
+        self.pipeline = None
 
     # -------------------------------
     # Overlay lock (blocks UI when busy)
@@ -56,6 +47,25 @@ class RAGApp:
     # -------------------------------
     def run(self):
         st.set_page_config(page_title="Advanced RAG")  # narrow layout
+
+        # Initialize session state
+        if "uploaded_file_names" not in st.session_state:
+            st.session_state.uploaded_file_names = set()
+        if "busy" not in st.session_state:
+            st.session_state.busy = False
+        if "last_answer" not in st.session_state:
+            st.session_state.last_answer = ""
+        if "collection_name" not in st.session_state:
+            st.session_state.collection_name = str(uuid.uuid4())
+
+        # Initialize pipeline if not already
+        if self.pipeline is None:
+            try:
+                self.pipeline = RAGPipeline(embedder_device=-1, collection_name=st.session_state.collection_name)
+            except Exception as e:
+                st.error(f"Failed to initialize RAGPipeline: {e}")
+                return
+
         st.markdown("<h1 style='text-align: center; color: white;'>📚 Advanced RAG Web Service</h1>", unsafe_allow_html=True)
 
         st.markdown("""
@@ -230,6 +240,10 @@ class RAGApp:
 # -------------------------------
 # Run App
 # -------------------------------
+@st.cache_resource
+def get_app():
+    return RAGApp()
+
 if __name__ == "__main__":
-    app = RAGApp()
+    app = get_app()
     app.run()
