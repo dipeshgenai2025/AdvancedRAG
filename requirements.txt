@@ -1,0 +1,31 @@
+# API framework
+fastapi
+uvicorn
+
+# Communication with Qdrant
+qdrant-client
+
+# PDF & document parsing
+pymupdf
+pdfplumber
+unstructured
+
+# OCR & image processing
+pytesseract
+opencv-python
+pillow
+
+# NLP & RAG utilities
+sentence-transformers
+torch
+transformers
+timm
+
+# Utils
+requests
+pydantic
+
+# Optional (advanced table/image parsing)
+layoutparser
+pdf2image
+
