@@ -30,11 +30,13 @@ if __name__ == "__main__":
     pipeline = RAGPipeline(embedder_device=0, collection_name="pdf_embeddings")
     
     # Ingest PDF and store embeddings
-    #result = pipeline.ingest_pdf(pdf_path, temp_dir="TempData")
+    # TODO : NOTE: Comment this line after first run, Qdrant DB will already been updated
+    result = pipeline.ingest_pdf(pdf_path, temp_dir="TempData")
     
     # Query example
     #user_question = "Who is Caitlin Burns?"
     #user_question = "What is in picture 3 ?"
     user_question = "What is the document all about ?"
+    
     answer = pipeline.ask(user_question)
     print("Answer:", answer)
