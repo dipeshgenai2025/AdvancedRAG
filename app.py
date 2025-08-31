@@ -1,17 +1,21 @@
 import streamlit as st
 import tempfile
 import os
+import uuid
 from RAG_Pipeline.RAG_Pipeline import RAGPipeline
 
 class RAGApp:
     def __init__(self):
-        self.pipeline = RAGPipeline()
         if "uploaded_file_names" not in st.session_state:
             st.session_state.uploaded_file_names = set()
         if "busy" not in st.session_state:
             st.session_state.busy = False
         if "last_answer" not in st.session_state:
             st.session_state.last_answer = ""
+        if "collection_name" not in st.session_state:
+            st.session_state.collection_name = str(uuid.uuid4())
+
+        self.pipeline = RAGPipeline(embedder_device=-1, collection_name=st.session_state.collection_name)
 
     # -------------------------------
     # Overlay lock (blocks UI when busy)
